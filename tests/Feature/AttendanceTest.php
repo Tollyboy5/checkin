@@ -40,6 +40,24 @@ class AttendanceTest extends TestCase
         ]);
     }
 
+    public function test_staff_check_in_records_forwarded_device_ip_from_trusted_proxy(): void
+    {
+        $staff = $this->createStaff();
+
+        $this->post('/check-in', [
+            'staff_id' => $staff->id,
+            'pin' => '1234',
+        ], [
+            'REMOTE_ADDR' => '10.0.0.10',
+            'HTTP_X_FORWARDED_FOR' => '192.168.1.55',
+        ])->assertRedirect('/');
+
+        $this->assertDatabaseHas('attendances', [
+            'staff_id' => $staff->id,
+            'check_in_ip' => '192.168.1.55',
+        ]);
+    }
+
     public function test_public_check_in_does_not_require_a_csrf_session_token(): void
     {
         $staff = $this->createStaff();
