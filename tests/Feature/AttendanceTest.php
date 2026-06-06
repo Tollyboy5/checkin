@@ -117,9 +117,13 @@ class AttendanceTest extends TestCase
         $this->post('/check-out', [
             'staff_id' => $staff->id,
             'pin' => '1234',
-        ])->assertSessionHas('success', 'Check-out recorded.');
+        ], ['REMOTE_ADDR' => '127.0.0.2'])
+            ->assertSessionHas('success', 'Check-out recorded.');
 
-        $this->assertNotNull(Attendance::first()->checked_out_at);
+        $attendance = Attendance::first();
+
+        $this->assertNotNull($attendance->checked_out_at);
+        $this->assertSame('127.0.0.2', $attendance->check_out_ip);
 
         $this->post('/check-out', [
             'staff_id' => $staff->id,
@@ -161,6 +165,7 @@ class AttendanceTest extends TestCase
             'checked_in_at' => now()->subDay()->setTime(23, 0),
             'checked_out_at' => now()->setTime(8, 0),
             'check_in_ip' => '127.0.0.1',
+            'check_out_ip' => '127.0.0.2',
         ]);
 
         $this->travelTo($attendance->checked_out_at);
@@ -170,7 +175,9 @@ class AttendanceTest extends TestCase
             ->assertSee('Checked out')
             ->assertSee('11:00 PM')
             ->assertSee('8:00 AM')
-            ->assertSee('9h 0m');
+            ->assertSee('9h 0m')
+            ->assertSee('127.0.0.1')
+            ->assertSee('127.0.0.2');
     }
 
     public function test_public_page_shows_open_attendance_from_previous_day(): void

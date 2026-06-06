@@ -141,6 +141,7 @@ class AdminDashboardTest extends TestCase
             'work_date' => Carbon::parse('2026-06-02'),
             'checked_in_at' => Carbon::parse('2026-06-02 09:00:00'),
             'check_in_ip' => '127.0.0.1',
+            'check_out_ip' => '127.0.0.2',
         ]);
 
         $this->actingAs($admin)->put("/admin/attendance/{$attendance->id}", [
@@ -149,6 +150,7 @@ class AdminDashboardTest extends TestCase
             'checked_in_at' => '09:03',
             'checked_out_at' => '17:05',
             'check_in_ip' => '127.0.0.2',
+            'check_out_ip' => '127.0.0.3',
         ])->assertRedirect('/admin/attendance?date=2026-06-02');
 
         $attendance->refresh();
@@ -156,6 +158,7 @@ class AdminDashboardTest extends TestCase
         $this->assertSame('09:03', $attendance->checked_in_at->format('H:i'));
         $this->assertSame('17:05', $attendance->checked_out_at->format('H:i'));
         $this->assertSame('127.0.0.2', $attendance->check_in_ip);
+        $this->assertSame('127.0.0.3', $attendance->check_out_ip);
     }
 
     public function test_admin_pages_show_completed_overnight_attendance_on_checkout_day(): void
@@ -170,6 +173,7 @@ class AdminDashboardTest extends TestCase
             'checked_in_at' => Carbon::parse('2026-06-02 23:00:00'),
             'checked_out_at' => Carbon::parse('2026-06-03 08:00:00'),
             'check_in_ip' => '127.0.0.1',
+            'check_out_ip' => '127.0.0.2',
         ]);
 
         $this->actingAs($admin)->get('/admin/attendance?date=2026-06-03')
@@ -177,14 +181,18 @@ class AdminDashboardTest extends TestCase
             ->assertSee('Night Person')
             ->assertSee('11:00 PM')
             ->assertSee('8:00 AM')
-            ->assertSee('9h 0m');
+            ->assertSee('9h 0m')
+            ->assertSee('127.0.0.1')
+            ->assertSee('127.0.0.2');
 
         $this->actingAs($admin)->get('/admin/dashboard?date=2026-06-03')
             ->assertOk()
             ->assertSee('Night Person')
             ->assertSee('11:00 PM')
             ->assertSee('8:00 AM')
-            ->assertSee('9h 0m');
+            ->assertSee('9h 0m')
+            ->assertSee('127.0.0.1')
+            ->assertSee('127.0.0.2');
     }
 
     public function test_admin_can_manage_rosters(): void

@@ -103,7 +103,8 @@
                             <th>Check In</th>
                             <th>Check Out</th>
                             <th>Hours</th>
-                            <th>IP</th>
+                            <th>Check-in IP</th>
+                            <th>Check-out IP</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -116,6 +117,7 @@
                                 <td>{{ $status['checked_out_at'] ?? '-' }}</td>
                                 <td>{{ $status['worked_duration'] ?? '-' }}</td>
                                 <td>{{ $status['check_in_ip'] ?? '-' }}</td>
+                                <td>{{ $status['check_out_ip'] ?? '-' }}</td>
                             </tr>
                         @endforeach
                         </tbody>

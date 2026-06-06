@@ -36,6 +36,7 @@ class AttendanceController extends Controller
                     'checked_out_at' => $attendance?->checked_out_at?->format('g:i A'),
                     'worked_duration' => $attendance?->workedDuration(),
                     'check_in_ip' => $attendance?->check_in_ip,
+                    'check_out_ip' => $attendance?->check_out_ip,
                 ],
             ];
         });
@@ -111,6 +112,7 @@ class AttendanceController extends Controller
 
         $attendance->update([
             'checked_out_at' => now(),
+            'check_out_ip' => $request->ip(),
         ]);
 
         return back()

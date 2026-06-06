@@ -46,6 +46,7 @@ class AttendanceRecordController extends Controller
             'checked_in_at' => $this->combineDateAndTime($workDate, $validated['checked_in_at'] ?? null),
             'checked_out_at' => $this->combineDateAndTime($workDate, $validated['checked_out_at'] ?? null),
             'check_in_ip' => $validated['check_in_ip'],
+            'check_out_ip' => $validated['check_out_ip'],
         ]);
 
         return redirect()

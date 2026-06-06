@@ -41,6 +41,8 @@
                 <th>Check In</th>
                 <th>Check Out</th>
                 <th>Hours</th>
+                <th>Check-in IP</th>
+                <th>Check-out IP</th>
                 <th>Status</th>
                 <th>Grade</th>
             </tr>
@@ -53,11 +55,13 @@
                     <td>{{ $row['attendance']?->checked_in_at?->format('g:i A') ?? '-' }}</td>
                     <td>{{ $row['attendance']?->checked_out_at?->format('g:i A') ?? '-' }}</td>
                     <td>{{ $row['attendance']?->workedDuration() ?? '-' }}</td>
+                    <td>{{ $row['attendance']?->check_in_ip ?? '-' }}</td>
+                    <td>{{ $row['attendance']?->check_out_ip ?? '-' }}</td>
                     <td><span class="badge">{{ $row['status'] }}</span></td>
                     <td>{{ $row['grade'] }}</td>
                 </tr>
             @empty
-                <tr><td colspan="7">No staff found.</td></tr>
+                <tr><td colspan="9">No staff found.</td></tr>
             @endforelse
             </tbody>
         </table>

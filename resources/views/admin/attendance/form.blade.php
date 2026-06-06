@@ -40,6 +40,10 @@
                     <label for="check_in_ip">Check-in IP</label>
                     <input id="check_in_ip" name="check_in_ip" value="{{ old('check_in_ip', $attendance->check_in_ip) }}">
                 </div>
+                <div class="field full">
+                    <label for="check_out_ip">Check-out IP</label>
+                    <input id="check_out_ip" name="check_out_ip" value="{{ old('check_out_ip', $attendance->check_out_ip) }}">
+                </div>
             </div>
 
             <div class="actions" style="margin-top: 18px;">

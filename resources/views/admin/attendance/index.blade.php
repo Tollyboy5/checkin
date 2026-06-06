@@ -21,7 +21,8 @@
                 <th>Check In</th>
                 <th>Check Out</th>
                 <th>Hours</th>
-                <th>IP</th>
+                <th>Check-in IP</th>
+                <th>Check-out IP</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -35,10 +36,11 @@
                     <td>{{ $attendance->checked_out_at?->format('g:i A') ?? '-' }}</td>
                     <td>{{ $attendance->workedDuration() ?? '-' }}</td>
                     <td>{{ $attendance->check_in_ip ?? '-' }}</td>
+                    <td>{{ $attendance->check_out_ip ?? '-' }}</td>
                     <td><a class="button secondary" href="{{ route('admin.attendance.edit', $attendance) }}">Edit</a></td>
                 </tr>
             @empty
-                <tr><td colspan="8">No attendance records for this date.</td></tr>
+                <tr><td colspan="9">No attendance records for this date.</td></tr>
             @endforelse
             </tbody>
         </table>

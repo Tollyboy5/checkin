@@ -19,6 +19,7 @@ class Attendance extends Model
         'checked_in_at',
         'checked_out_at',
         'check_in_ip',
+        'check_out_ip',
     ];
 
     protected $casts = [

@@ -19,6 +19,7 @@ class AttendanceRecordRequest extends FormRequest
             'checked_in_at' => ['nullable', 'date_format:H:i'],
             'checked_out_at' => ['nullable', 'date_format:H:i'],
             'check_in_ip' => ['nullable', 'string', 'max:45'],
+            'check_out_ip' => ['nullable', 'string', 'max:45'],
         ];
     }
 }

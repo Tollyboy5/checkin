@@ -1,0 +1,2 @@
+ALTER TABLE attendances
+ADD COLUMN check_out_ip VARCHAR(45) NULL AFTER check_in_ip;
