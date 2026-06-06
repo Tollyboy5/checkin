@@ -109,6 +109,51 @@ class AttendanceTest extends TestCase
         ])->assertSessionHas('error', 'You have already checked out today.');
     }
 
+    public function test_staff_can_check_out_open_attendance_from_previous_day(): void
+    {
+        $staff = $this->createStaff();
+
+        $this->travelTo(now()->subDay()->setTime(23, 0));
+
+        $attendance = Attendance::create([
+            'staff_id' => $staff->id,
+            'work_date' => today(),
+            'checked_in_at' => now(),
+            'check_in_ip' => '127.0.0.1',
+        ]);
+
+        $this->travelTo(now()->addDay()->setTime(8, 0));
+
+        $this->post('/check-out', [
+            'staff_id' => $staff->id,
+            'pin' => '1234',
+        ])->assertSessionHas('success', 'Check-out recorded.');
+
+        $this->assertSame(1, Attendance::count());
+        $this->assertSame('08:00', $attendance->fresh()->checked_out_at->format('H:i'));
+    }
+
+    public function test_public_page_shows_open_attendance_from_previous_day(): void
+    {
+        $staff = $this->createStaff();
+
+        $this->travelTo(now()->subDay()->setTime(23, 0));
+
+        Attendance::create([
+            'staff_id' => $staff->id,
+            'work_date' => today(),
+            'checked_in_at' => now(),
+            'check_in_ip' => '127.0.0.1',
+        ]);
+
+        $this->travelTo(now()->addDay()->setTime(8, 0));
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Checked in')
+            ->assertSee('11:00 PM');
+    }
+
     public function test_incorrect_pin_is_rejected(): void
     {
         $staff = $this->createStaff();

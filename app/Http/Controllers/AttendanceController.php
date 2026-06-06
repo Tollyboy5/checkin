@@ -18,7 +18,14 @@ class AttendanceController extends Controller
 
         $staff = Staff::query()
             ->where('active', true)
-            ->with(['attendances' => fn ($query) => $query->whereDate('work_date', $today)])
+            ->with(['attendances' => fn ($query) => $query
+                ->where(fn ($query) => $query
+                    ->whereDate('work_date', $today)
+                    ->orWhere(fn ($query) => $query->open())
+                )
+                ->orderByRaw('checked_out_at is null desc')
+                ->latest('work_date')
+            ])
             ->orderBy('name')
             ->get();
 
@@ -50,7 +57,10 @@ class AttendanceController extends Controller
 
         $alreadyCheckedIn = Attendance::query()
             ->where('staff_id', $staffMember->id)
-            ->whereDate('work_date', $today)
+            ->where(fn ($query) => $query
+                ->whereDate('work_date', $today)
+                ->orWhere(fn ($query) => $query->open())
+            )
             ->exists();
 
         if ($alreadyCheckedIn) {
@@ -78,8 +88,16 @@ class AttendanceController extends Controller
 
         $attendance = Attendance::query()
             ->where('staff_id', $staffMember->id)
-            ->whereDate('work_date', $today)
+            ->open()
+            ->latest('work_date')
             ->first();
+
+        if (! $attendance) {
+            $attendance = Attendance::query()
+                ->where('staff_id', $staffMember->id)
+                ->whereDate('work_date', $today)
+                ->first();
+        }
 
         if (! $attendance || ! $attendance->checked_in_at) {
             return back()
