@@ -102,6 +102,7 @@
                             <th>Status</th>
                             <th>Check In</th>
                             <th>Check Out</th>
+                            <th>Hours</th>
                             <th>IP</th>
                         </tr>
                         </thead>
@@ -113,6 +114,7 @@
                                 <td><span class="badge text-bg-secondary">{{ $status['label'] }}</span></td>
                                 <td>{{ $status['checked_in_at'] ?? '-' }}</td>
                                 <td>{{ $status['checked_out_at'] ?? '-' }}</td>
+                                <td>{{ $status['worked_duration'] ?? '-' }}</td>
                                 <td>{{ $status['check_in_ip'] ?? '-' }}</td>
                             </tr>
                         @endforeach

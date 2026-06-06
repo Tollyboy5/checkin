@@ -133,6 +133,28 @@ class AttendanceTest extends TestCase
         $this->assertSame('08:00', $attendance->fresh()->checked_out_at->format('H:i'));
     }
 
+    public function test_public_page_shows_completed_overnight_attendance_on_checkout_day(): void
+    {
+        $staff = $this->createStaff();
+
+        $attendance = Attendance::create([
+            'staff_id' => $staff->id,
+            'work_date' => now()->subDay()->startOfDay(),
+            'checked_in_at' => now()->subDay()->setTime(23, 0),
+            'checked_out_at' => now()->setTime(8, 0),
+            'check_in_ip' => '127.0.0.1',
+        ]);
+
+        $this->travelTo($attendance->checked_out_at);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Checked out')
+            ->assertSee('11:00 PM')
+            ->assertSee('8:00 AM')
+            ->assertSee('9h 0m');
+    }
+
     public function test_public_page_shows_open_attendance_from_previous_day(): void
     {
         $staff = $this->createStaff();

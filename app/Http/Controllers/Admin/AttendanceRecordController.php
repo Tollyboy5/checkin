@@ -19,7 +19,7 @@ class AttendanceRecordController extends Controller
             'date' => Carbon::parse($date)->startOfDay(),
             'attendances' => Attendance::query()
                 ->with('staff.shift')
-                ->whereDate('work_date', $date)
+                ->visibleOnDate($date)
                 ->orderBy('checked_in_at')
                 ->paginate(20)
                 ->withQueryString(),

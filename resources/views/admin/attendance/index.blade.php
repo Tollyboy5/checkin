@@ -20,6 +20,7 @@
                 <th>Date</th>
                 <th>Check In</th>
                 <th>Check Out</th>
+                <th>Hours</th>
                 <th>IP</th>
                 <th>Actions</th>
             </tr>
@@ -32,11 +33,12 @@
                     <td>{{ $attendance->work_date->toDateString() }}</td>
                     <td>{{ $attendance->checked_in_at?->format('g:i A') ?? '-' }}</td>
                     <td>{{ $attendance->checked_out_at?->format('g:i A') ?? '-' }}</td>
+                    <td>{{ $attendance->workedDuration() ?? '-' }}</td>
                     <td>{{ $attendance->check_in_ip ?? '-' }}</td>
                     <td><a class="button secondary" href="{{ route('admin.attendance.edit', $attendance) }}">Edit</a></td>
                 </tr>
             @empty
-                <tr><td colspan="7">No attendance records for this date.</td></tr>
+                <tr><td colspan="8">No attendance records for this date.</td></tr>
             @endforelse
             </tbody>
         </table>

@@ -19,10 +19,7 @@ class AttendanceController extends Controller
         $staff = Staff::query()
             ->where('active', true)
             ->with(['attendances' => fn ($query) => $query
-                ->where(fn ($query) => $query
-                    ->whereDate('work_date', $today)
-                    ->orWhere(fn ($query) => $query->open())
-                )
+                ->visibleOnDate($today)
                 ->orderByRaw('checked_out_at is null desc')
                 ->latest('work_date')
             ])
@@ -37,6 +34,7 @@ class AttendanceController extends Controller
                     'label' => $this->statusLabel($attendance),
                     'checked_in_at' => $attendance?->checked_in_at?->format('g:i A'),
                     'checked_out_at' => $attendance?->checked_out_at?->format('g:i A'),
+                    'worked_duration' => $attendance?->workedDuration(),
                     'check_in_ip' => $attendance?->check_in_ip,
                 ],
             ];

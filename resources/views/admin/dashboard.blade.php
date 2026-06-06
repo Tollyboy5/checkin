@@ -40,6 +40,7 @@
                 <th>Shift</th>
                 <th>Check In</th>
                 <th>Check Out</th>
+                <th>Hours</th>
                 <th>Status</th>
                 <th>Grade</th>
             </tr>
@@ -51,11 +52,12 @@
                     <td>{{ $row['shift']?->name ?? 'Unassigned' }}</td>
                     <td>{{ $row['attendance']?->checked_in_at?->format('g:i A') ?? '-' }}</td>
                     <td>{{ $row['attendance']?->checked_out_at?->format('g:i A') ?? '-' }}</td>
+                    <td>{{ $row['attendance']?->workedDuration() ?? '-' }}</td>
                     <td><span class="badge">{{ $row['status'] }}</span></td>
                     <td>{{ $row['grade'] }}</td>
                 </tr>
             @empty
-                <tr><td colspan="6">No staff found.</td></tr>
+                <tr><td colspan="7">No staff found.</td></tr>
             @endforelse
             </tbody>
         </table>

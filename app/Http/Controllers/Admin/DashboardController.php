@@ -21,7 +21,10 @@ class DashboardController extends Controller
             ->with([
                 'shift',
                 'rosters.shift',
-                'attendances' => fn ($query) => $query->whereDate('work_date', $date),
+                'attendances' => fn ($query) => $query
+                    ->visibleOnDate($date)
+                    ->orderByRaw('checked_out_at is null desc')
+                    ->latest('work_date'),
             ])
             ->orderBy('name')
             ->get();
@@ -46,7 +49,7 @@ class DashboardController extends Controller
             'rows' => $rows,
             'dailyAttendances' => Attendance::query()
                 ->with('staff.shift')
-                ->whereDate('work_date', $date)
+                ->visibleOnDate($date)
                 ->orderBy('checked_in_at')
                 ->get(),
             'lateStaff' => $rows->where('status', 'Late')->values(),

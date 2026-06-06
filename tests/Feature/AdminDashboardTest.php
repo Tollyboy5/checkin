@@ -158,6 +158,35 @@ class AdminDashboardTest extends TestCase
         $this->assertSame('127.0.0.2', $attendance->check_in_ip);
     }
 
+    public function test_admin_pages_show_completed_overnight_attendance_on_checkout_day(): void
+    {
+        $admin = $this->createAdmin();
+        $shift = $this->createShift();
+        $staff = $this->createStaff('Night Person', $shift);
+
+        Attendance::create([
+            'staff_id' => $staff->id,
+            'work_date' => Carbon::parse('2026-06-02'),
+            'checked_in_at' => Carbon::parse('2026-06-02 23:00:00'),
+            'checked_out_at' => Carbon::parse('2026-06-03 08:00:00'),
+            'check_in_ip' => '127.0.0.1',
+        ]);
+
+        $this->actingAs($admin)->get('/admin/attendance?date=2026-06-03')
+            ->assertOk()
+            ->assertSee('Night Person')
+            ->assertSee('11:00 PM')
+            ->assertSee('8:00 AM')
+            ->assertSee('9h 0m');
+
+        $this->actingAs($admin)->get('/admin/dashboard?date=2026-06-03')
+            ->assertOk()
+            ->assertSee('Night Person')
+            ->assertSee('11:00 PM')
+            ->assertSee('8:00 AM')
+            ->assertSee('9h 0m');
+    }
+
     public function test_admin_can_manage_rosters(): void
     {
         $admin = $this->createAdmin();
